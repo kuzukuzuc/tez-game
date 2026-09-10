@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oyun — Chaos Run Prototype</title>
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#111;color:#fff;font-family:Arial,sans-serif}
+    canvas{display:block}
+    #hud{position:fixed;inset:0;pointer-events:none;padding:18px;box-sizing:border-box;text-shadow:0 2px 4px #000}
+    #stats{font-size:16px;line-height:1.5}
+    #crosshair{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:24px}
+    #help{position:absolute;bottom:18px;left:18px;opacity:.8;font-size:13px}
+    #status{position:absolute;top:18px;right:18px;text-align:right}
+    #message{position:absolute;left:50%;top:25%;transform:translateX(-50%);font-size:22px;font-weight:bold;text-align:center}
+  </style>
+</head>
+<body>
+  <div id="hud">
+    <div id="stats">HP: <span id="hp">100</span> | STAMINA: <span id="stamina">100</span> | WEIGHT: <span id="weight">0</span></div>
+    <div id="status">RUN: <span id="run">1</span><br>CHAOS: <span id="chaos">LOW</span></div>
+    <div id="crosshair">+</div>
+    <div id="message"></div>
+    <div id="help">WASD hareket · SHIFT sprint · SPACE zıpla · E al/etkileşim · Sol tık ateş · Sağ tık tırman · 1-4 slot</div>
+  </div>
+  <script type="module" src="./src/game.js"></script>
+</body>
+</html>
