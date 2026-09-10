@@ -178,7 +178,7 @@ function shootOrMelee(){
   if(player.dead||player.attackCooldown>0)return;
   const ray=new THREE.Raycaster();ray.setFromCamera(new THREE.Vector2(0,0),camera);const w=weapons[weapon];
   if(ammo>0){const hits=ray.intersectObjects(creatures,false).filter(h=>h.distance<=w.range);if(hits.length){const c=hits[0].object;c.userData.hp-=w.damage;c.userData.vel.addScaledVector(ray.ray.direction,w.knockback/Math.max(1,c.userData.mass));if(c.userData.hp<=0){scene.remove(c);creatures.splice(creatures.indexOf(c),1);}}
-ammo--;player.attackCooldown=w.cooldown;message(`${weapon.toUpperCase()}  ${ammo}`);return;}
+  ammo--;player.attackCooldown=w.cooldown;message(`${weapon.toUpperCase()}  ${ammo}`);return;}
   const hits=ray.intersectObjects(creatures,false);if(hits.length&&hits[0].distance<3){const c=hits[0].object;c.userData.hp-=1;c.userData.vel.addScaledVector(ray.ray.direction,5/Math.max(1,c.userData.mass));player.attackCooldown=.35;}else message('Mermi yok');
 }
 function tryClimb(dt){
@@ -188,7 +188,7 @@ function tryClimb(dt){
 }
 function playerCollision(){
   player.grounded=false;
-  for(const b of blocks){if(!['platform','climbWall','crate','rock','checkpoint'].includes(b.name))continue;const s=b.userData.size,dx=player.pos.x-b.position.x,dz=player.pos.z-b.position.z,top=b.position.y+s.y/2;
+  for(const b of blocks){if(!['ground','platform','climbWall','crate','rock','checkpoint'].includes(b.name))continue;const s=b.userData.size,dx=player.pos.x-b.position.x,dz=player.pos.z-b.position.z,top=b.position.y+s.y/2;
     if(Math.abs(dx)<s.x/2+.35&&Math.abs(dz)<s.z/2+.35&&player.pos.y>=top-.3&&player.pos.y<=top+1.3&&player.vel.y<=0){player.pos.y=top+1.2;player.vel.y=0;player.grounded=true;}
     else if(Math.abs(dx)<s.x/2+.35&&Math.abs(dz)<s.z/2+.35&&player.pos.y<top+1.0){if(Math.abs(dx)>Math.abs(dz))player.pos.x=b.position.x+(dx>=0?s.x/2+.36:-s.x/2-.36);else player.pos.z=b.position.z+(dz>=0?s.z/2+.36:-s.z/2-.36);}
   }
@@ -217,7 +217,8 @@ function updateHazards(dt){
   if(!player.shelter&&!player.dead){if(weather==='ACID RAIN')player.hp-=4*dt;if(weather==='STORM'&&Math.random()<.012)player.hp-=18;if(player.hp<=0)die();}
 }
 function updateCheckpoint(){
-  for(let i=0;i<checkpoints.length;i++){if(player.pos.z<=checkpoints[i].z&&player.checkpoint<i+1){player.checkpoint=i+1;message(`KONTROL NOKTASI ${i+1}`);}}}
+  for(let i=0;i<checkpoints.length;i++){if(player.pos.z<=checkpoints[i].z&&player.checkpoint<i+1){player.checkpoint=i+1;message(`KONTROL NOKTASI ${i+1}`);}}
+}
 function maybeSpawn(){
   if(player.pos.z>-30)return;
   const chance=Math.min(.012,.002+Math.abs(player.pos.z)/70000+chaos/12000);
@@ -229,8 +230,7 @@ function updateHUD(){
 }
 
 let last=performance.now();
-function loop(now){
-  const dt=Math.min(.033,(now-last)/1000);last=now;runTime+=dt;player.attackCooldown=Math.max(0,player.attackCooldown-dt);
+function loop(now){const dt=Math.min(.033,(now-last)/1000);last=now;runTime+=dt;player.attackCooldown=Math.max(0,player.attackCooldown-dt);
   if(!player.dead){
     const sprint=keys.ShiftLeft||keys.ShiftRight, move=new THREE.Vector3((keys.KeyD?1:0)-(keys.KeyA?1:0),0,(keys.KeyS?1:0)-(keys.KeyW?1:0));
     if(move.lengthSq())move.normalize();const speed=sprint&&player.stamina>0?7.2:4.2;
